@@ -226,10 +226,24 @@
         return;
       }
 
+      const relayoutPayload = {};
       const currentY = Number(plot.layout.title.y);
-      if (!Number.isFinite(currentY) || currentY <= desiredY) return;
+      if (Number.isFinite(currentY) && currentY > desiredY) {
+        relayoutPayload["title.y"] = desiredY;
+      }
 
-      iframeWindow.Plotly.relayout(plot, { "title.y": desiredY });
+      if (plot.layout.paper_bgcolor !== "white") {
+        relayoutPayload.paper_bgcolor = "white";
+      }
+      if (plot.layout.plot_bgcolor !== "white") {
+        relayoutPayload.plot_bgcolor = "white";
+      }
+      if (plot.layout.scene?.bgcolor !== "white") {
+        relayoutPayload["scene.bgcolor"] = "white";
+      }
+
+      if (Object.keys(relayoutPayload).length === 0) return;
+      iframeWindow.Plotly.relayout(plot, relayoutPayload);
     }
 
     function setView(key) {
@@ -245,7 +259,11 @@
       });
     }
 
-    viewer.addEventListener("load", () => tuneEmbeddedTitle(activeViewKey));
+    viewer.addEventListener("load", () => {
+      tuneEmbeddedTitle(activeViewKey);
+      window.setTimeout(() => tuneEmbeddedTitle(activeViewKey), 300);
+      window.setTimeout(() => tuneEmbeddedTitle(activeViewKey), 900);
+    });
 
     buttons.old.addEventListener("click", () => setView("old"));
     buttons.dual.addEventListener("click", () => setView("dual"));
