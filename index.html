@@ -45,8 +45,8 @@
     }
     .controls {
       margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
       gap: 8px;
       align-items: center;
     }
@@ -59,6 +59,7 @@
       padding: 8px 12px;
       font-size: 14px;
       cursor: pointer;
+      text-align: left;
     }
     button.active {
       color: #fff;
@@ -73,15 +74,63 @@
       text-decoration: none;
       font-size: 14px;
     }
+    .open-link {
+      grid-column: 1 / -1;
+      margin-top: 2px;
+      display: inline-block;
+    }
     a:hover { text-decoration: underline; }
+    .view-meta {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fafcff;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .view-meta strong {
+      color: var(--text);
+    }
     iframe {
       width: 100%;
-      height: calc(100vh - 180px);
-      min-height: 620px;
+      height: clamp(460px, 72vh, 980px);
+      min-height: 460px;
       border: 1px solid var(--border);
       border-radius: 10px;
       margin-top: 12px;
       background: #fff;
+    }
+    @media (max-width: 900px) {
+      .wrap {
+        padding: 10px;
+      }
+      .panel {
+        padding: 10px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      button {
+        width: 100%;
+      }
+      iframe {
+        height: 72vh;
+        min-height: 420px;
+      }
+    }
+    @media (max-width: 540px) {
+      iframe {
+        height: 68vh;
+        min-height: 360px;
+      }
+      .view-meta {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -89,12 +138,13 @@
   <div class="wrap">
     <div class="panel">
       <h1>Hematopoiesis Manifold Viewer</h1>
-      <p>Switch between the original figure and the new dual-lens figure.</p>
+      <p>Explore two complementary views of the hematopoietic manifold.</p>
       <div class="controls">
-        <button id="btn-old" data-view="old">Original Interactive Figure</button>
-        <button id="btn-dual" data-view="dual">New Dual-Lens Interactive Figure</button>
-        <a id="open-link" href="hematopoiesis_map_dual_lens_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
+        <button id="btn-old" data-view="old">Reference Map: Natural Hematopoiesis Geometry</button>
+        <button id="btn-dual" data-view="dual">Enhanced Map: Clearer T-Cell and Myeloid Separation</button>
+        <a class="open-link" id="open-link" href="hematopoiesis_map_dual_lens_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
       </div>
+      <div id="view-description" class="view-meta"></div>
       <iframe
         id="viewer"
         src="hematopoiesis_map_dual_lens_interactive_3d.html"
@@ -106,21 +156,31 @@
 
   <script>
     const views = {
-      old: "hematopoiesis_map_unseen_immune_cells_interactive_3d.html",
-      dual: "hematopoiesis_map_dual_lens_interactive_3d.html"
+      old: {
+        file: "hematopoiesis_map_unseen_immune_cells_interactive_3d.html",
+        title: "Reference Map: Natural Hematopoiesis Geometry",
+        description: "Shows the baseline manifold geometry directly. Use this for the most faithful global structure and branch layout."
+      },
+      dual: {
+        file: "hematopoiesis_map_dual_lens_interactive_3d.html",
+        title: "Enhanced Map: Clearer T-Cell and Myeloid Separation",
+        description: "Uses a dual-lens view to make CD4/CD8 and Monocyte/Macrophage differences easier to inspect while preserving overall biological context."
+      }
     };
 
     const viewer = document.getElementById("viewer");
     const openLink = document.getElementById("open-link");
+    const viewDescription = document.getElementById("view-description");
     const buttons = {
       old: document.getElementById("btn-old"),
       dual: document.getElementById("btn-dual")
     };
 
     function setView(key) {
-      const file = views[key] || views.dual;
-      viewer.src = file;
-      openLink.href = file;
+      const selected = views[key] || views.dual;
+      viewer.src = selected.file;
+      openLink.href = selected.file;
+      viewDescription.innerHTML = `<strong>${selected.title}</strong><br>${selected.description}`;
       Object.entries(buttons).forEach(([k, btn]) => {
         if (!btn) return;
         btn.classList.toggle("active", k === key);
