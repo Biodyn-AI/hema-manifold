@@ -138,10 +138,10 @@
   <div class="wrap">
     <div class="panel">
       <h1>Hematopoiesis Manifold Viewer</h1>
-      <p>Explore two complementary views of the hematopoietic manifold.</p>
+      <p>Compare a dataset-fitted map versus a zero-shot transfer map of the same hematopoietic manifold.</p>
       <div class="controls">
-        <button id="btn-old" data-view="old">Reference Map: Natural Hematopoiesis Geometry</button>
-        <button id="btn-dual" data-view="dual">Enhanced Map: Clearer T-Cell and Myeloid Separation</button>
+        <button id="btn-old" data-view="old">Dataset-Fitted Map (trained on this dataset)</button>
+        <button id="btn-dual" data-view="dual">Zero-Shot Transfer Map (no external retraining)</button>
         <a class="open-link" id="open-link" href="hematopoiesis_map_dual_lens_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
       </div>
       <div id="view-description" class="view-meta"></div>
@@ -158,13 +158,13 @@
     const views = {
       old: {
         file: "hematopoiesis_map_unseen_immune_cells_interactive_3d.html",
-        title: "Reference Map: Natural Hematopoiesis Geometry",
-        description: "Shows the baseline manifold geometry directly. Use this for the most faithful global structure and branch layout."
+        title: "Dataset-Fitted Map (trained on this dataset)",
+        description: "Projection head is fitted with this dataset's structure, then visualized with the interactive manifold controls."
       },
       dual: {
         file: "hematopoiesis_map_dual_lens_interactive_3d.html",
-        title: "Enhanced Map: Clearer T-Cell and Myeloid Separation",
-        description: "Uses a dual-lens view to make CD4/CD8 and Monocyte/Macrophage differences easier to inspect while preserving overall biological context."
+        title: "Zero-Shot Transfer Map (no external retraining)",
+        description: "Projection head is transferred without retraining on this dataset; dual-lens controls improve CD4/CD8 and Monocyte/Macrophage readability."
       }
     };
 
