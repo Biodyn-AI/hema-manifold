@@ -138,17 +138,18 @@
   <div class="wrap">
     <div class="panel">
       <h1>Hematopoiesis Manifold Viewer</h1>
-      <p>Compare three interactive hematopoiesis maps: dataset-fitted, zero-shot transfer, and cell-trained zero-shot transfer.</p>
+      <p>Compare four interactive hematopoiesis maps: dataset-fitted, zero-shot transfer, cell-trained transfer, and a topology-emphasized hybrid view.</p>
       <div class="controls">
         <button id="btn-old" data-view="old">Dataset-Fitted Map (trained on this dataset)</button>
         <button id="btn-dual" data-view="dual">Zero-Shot Transfer Map (no external retraining)</button>
         <button id="btn-cell" data-view="cell">Cell-Trained Zero-Shot Map (trained on internal cells)</button>
-        <a class="open-link" id="open-link" href="hematopoiesis_map_cell_trained_zero_shot_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
+        <button id="btn-hybrid" data-view="hybrid">Hybrid Topology Map (strong topology sweep)</button>
+        <a class="open-link" id="open-link" href="hematopoiesis_map_hybrid_topology_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
       </div>
       <div id="view-description" class="view-meta"></div>
       <iframe
         id="viewer"
-        src="hematopoiesis_map_cell_trained_zero_shot_interactive_3d.html"
+        src="hematopoiesis_map_hybrid_topology_interactive_3d.html"
         title="Hematopoiesis manifold interactive figure"
         loading="eager"
       ></iframe>
@@ -171,6 +172,11 @@
         file: "hematopoiesis_map_cell_trained_zero_shot_interactive_3d.html",
         title: "Cell-Trained Zero-Shot Map (trained on internal cells)",
         description: "Projection head is trained on internal Tabula Sapiens cell-level labels, then transferred zero-shot; this map tends to strengthen global CD4/CD8 and Monocyte/Macrophage separability."
+      },
+      hybrid: {
+        file: "hematopoiesis_map_hybrid_topology_interactive_3d.html",
+        title: "Hybrid Topology Map (strong topology sweep)",
+        description: "Hybrid head combines cell-level training with anchor-topology preservation; this view emphasizes clearer developmental branch structure while retaining strong subtype separation."
       }
     };
 
@@ -180,7 +186,8 @@
     const buttons = {
       old: document.getElementById("btn-old"),
       dual: document.getElementById("btn-dual"),
-      cell: document.getElementById("btn-cell")
+      cell: document.getElementById("btn-cell"),
+      hybrid: document.getElementById("btn-hybrid")
     };
 
     function setView(key) {
@@ -197,8 +204,9 @@
     buttons.old.addEventListener("click", () => setView("old"));
     buttons.dual.addEventListener("click", () => setView("dual"));
     buttons.cell.addEventListener("click", () => setView("cell"));
+    buttons.hybrid.addEventListener("click", () => setView("hybrid"));
 
-    setView("cell");
+    setView("hybrid");
   </script>
 </body>
 </html>
