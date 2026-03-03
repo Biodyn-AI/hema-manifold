@@ -189,6 +189,13 @@
     const viewer = document.getElementById("viewer");
     const openLink = document.getElementById("open-link");
     const viewDescription = document.getElementById("view-description");
+    const titleYByView = {
+      old: 0.97,
+      dual: 0.965,
+      cell: 0.965,
+      hybrid: 0.965,
+      single: 0.955
+    };
     const buttons = {
       old: document.getElementById("btn-old"),
       dual: document.getElementById("btn-dual"),
@@ -196,17 +203,49 @@
       hybrid: document.getElementById("btn-hybrid"),
       single: document.getElementById("btn-single")
     };
+    let activeViewKey = "hybrid";
+
+    function tuneEmbeddedTitle(key, attempt = 0) {
+      const desiredY = titleYByView[key];
+      if (typeof desiredY !== "number") return;
+
+      let iframeWindow;
+      let iframeDocument;
+      try {
+        iframeWindow = viewer.contentWindow;
+        iframeDocument = viewer.contentDocument || iframeWindow?.document;
+      } catch (_) {
+        return;
+      }
+
+      const plot = iframeDocument?.querySelector(".plotly-graph-div");
+      if (!iframeWindow?.Plotly || !plot?.layout?.title) {
+        if (attempt < 12) {
+          window.setTimeout(() => tuneEmbeddedTitle(key, attempt + 1), 80);
+        }
+        return;
+      }
+
+      const currentY = Number(plot.layout.title.y);
+      if (!Number.isFinite(currentY) || currentY <= desiredY) return;
+
+      iframeWindow.Plotly.relayout(plot, { "title.y": desiredY });
+    }
 
     function setView(key) {
-      const selected = views[key] || views.dual;
+      const selectedKey = views[key] ? key : "dual";
+      const selected = views[selectedKey];
+      activeViewKey = selectedKey;
       viewer.src = selected.file;
       openLink.href = selected.file;
       viewDescription.innerHTML = `<strong>${selected.title}</strong><br>${selected.description}`;
       Object.entries(buttons).forEach(([k, btn]) => {
         if (!btn) return;
-        btn.classList.toggle("active", k === key);
+        btn.classList.toggle("active", k === selectedKey);
       });
     }
+
+    viewer.addEventListener("load", () => tuneEmbeddedTitle(activeViewKey));
 
     buttons.old.addEventListener("click", () => setView("old"));
     buttons.dual.addEventListener("click", () => setView("dual"));
