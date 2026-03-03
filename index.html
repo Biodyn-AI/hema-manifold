@@ -138,12 +138,13 @@
   <div class="wrap">
     <div class="panel">
       <h1>Hematopoiesis Manifold Viewer</h1>
-      <p>Compare four interactive hematopoiesis maps: dataset-fitted, zero-shot transfer, cell-trained transfer, and a topology-emphasized hybrid view.</p>
+      <p>Compare five interactive hematopoiesis maps: dataset-fitted, zero-shot transfer, cell-trained transfer, topology-emphasized hybrid, and best single-head transfer.</p>
       <div class="controls">
         <button id="btn-old" data-view="old">Dataset-Fitted Map (trained on this dataset)</button>
         <button id="btn-dual" data-view="dual">Zero-Shot Transfer Map (no external retraining)</button>
         <button id="btn-cell" data-view="cell">Cell-Trained Zero-Shot Map (trained on internal cells)</button>
         <button id="btn-hybrid" data-view="hybrid">Hybrid Topology Map (strong topology sweep)</button>
+        <button id="btn-single" data-view="single">Best Single-Head Map (Layer 2 / Head 5)</button>
         <a class="open-link" id="open-link" href="hematopoiesis_map_hybrid_topology_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
       </div>
       <div id="view-description" class="view-meta"></div>
@@ -177,6 +178,11 @@
         file: "hematopoiesis_map_hybrid_topology_interactive_3d.html",
         title: "Hybrid Topology Map (strong topology sweep)",
         description: "Hybrid head combines cell-level training with anchor-topology preservation; this view emphasizes clearer developmental branch structure while retaining strong subtype separation."
+      },
+      single: {
+        file: "hematopoiesis_map_single_head_l2h5_interactive_3d.html",
+        title: "Best Single-Head Map (Layer 2 / Head 5)",
+        description: "This map uses a single attention unit (Layer 2, Head 5) selected by the head-attribution screen; it captures strong global developmental geometry with zero-shot transfer."
       }
     };
 
@@ -187,7 +193,8 @@
       old: document.getElementById("btn-old"),
       dual: document.getElementById("btn-dual"),
       cell: document.getElementById("btn-cell"),
-      hybrid: document.getElementById("btn-hybrid")
+      hybrid: document.getElementById("btn-hybrid"),
+      single: document.getElementById("btn-single")
     };
 
     function setView(key) {
@@ -205,6 +212,7 @@
     buttons.dual.addEventListener("click", () => setView("dual"));
     buttons.cell.addEventListener("click", () => setView("cell"));
     buttons.hybrid.addEventListener("click", () => setView("hybrid"));
+    buttons.single.addEventListener("click", () => setView("single"));
 
     setView("hybrid");
   </script>
