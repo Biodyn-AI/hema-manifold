@@ -46,7 +46,7 @@
     .controls {
       margin-top: 12px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 8px;
       align-items: center;
     }
@@ -138,16 +138,17 @@
   <div class="wrap">
     <div class="panel">
       <h1>Hematopoiesis Manifold Viewer</h1>
-      <p>Compare a dataset-fitted map versus a zero-shot transfer map of the same hematopoietic manifold.</p>
+      <p>Compare three interactive hematopoiesis maps: dataset-fitted, zero-shot transfer, and cell-trained zero-shot transfer.</p>
       <div class="controls">
         <button id="btn-old" data-view="old">Dataset-Fitted Map (trained on this dataset)</button>
         <button id="btn-dual" data-view="dual">Zero-Shot Transfer Map (no external retraining)</button>
-        <a class="open-link" id="open-link" href="hematopoiesis_map_dual_lens_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
+        <button id="btn-cell" data-view="cell">Cell-Trained Zero-Shot Map (trained on internal cells)</button>
+        <a class="open-link" id="open-link" href="hematopoiesis_map_cell_trained_zero_shot_interactive_3d.html" target="_blank" rel="noopener">Open current view in a new tab</a>
       </div>
       <div id="view-description" class="view-meta"></div>
       <iframe
         id="viewer"
-        src="hematopoiesis_map_dual_lens_interactive_3d.html"
+        src="hematopoiesis_map_cell_trained_zero_shot_interactive_3d.html"
         title="Hematopoiesis manifold interactive figure"
         loading="eager"
       ></iframe>
@@ -165,6 +166,11 @@
         file: "hematopoiesis_map_dual_lens_interactive_3d.html",
         title: "Zero-Shot Transfer Map (no external retraining)",
         description: "Projection head is transferred without retraining on this dataset; dual-lens controls improve CD4/CD8 and Monocyte/Macrophage readability."
+      },
+      cell: {
+        file: "hematopoiesis_map_cell_trained_zero_shot_interactive_3d.html",
+        title: "Cell-Trained Zero-Shot Map (trained on internal cells)",
+        description: "Projection head is trained on internal Tabula Sapiens cell-level labels, then transferred zero-shot; this map tends to strengthen global CD4/CD8 and Monocyte/Macrophage separability."
       }
     };
 
@@ -173,7 +179,8 @@
     const viewDescription = document.getElementById("view-description");
     const buttons = {
       old: document.getElementById("btn-old"),
-      dual: document.getElementById("btn-dual")
+      dual: document.getElementById("btn-dual"),
+      cell: document.getElementById("btn-cell")
     };
 
     function setView(key) {
@@ -189,8 +196,9 @@
 
     buttons.old.addEventListener("click", () => setView("old"));
     buttons.dual.addEventListener("click", () => setView("dual"));
+    buttons.cell.addEventListener("click", () => setView("cell"));
 
-    setView("dual");
+    setView("cell");
   </script>
 </body>
 </html>
